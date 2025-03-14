@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Spectre Hub - A modern video-sharing platform">
+  <meta name="keywords" content="video sharing, Spectre Hub, Preetam Singh">
+  <meta name="author" content="Preetam Singh">
+  <title>Spectre Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1 class="logo"><a href="#" class="animated-logo">Spectre Hub</a></h1>
+      <div class="search-container">
+        <input type="text" id="search-bar" placeholder="Search videos..." onkeyup="searchVideos()">
+      </div>
+      <button id="theme-toggle">🌙</button>
+    </div>
+
+    
+  </header>
+
+
+
+
+
+
+
+
+  
+  <section class="search-filter container">
+    <div class="filters">
+      <button onclick="filterVideos('all')">All</button>
+      <button onclick="filterVideos('latest')">Latest</button>
+      <button onclick="filterVideos('trending')">Trending</button>
+      <button onclick="filterVideos('popular')">Popular</button>
+    </div>
+  </section>
+
+  <section class="video-grid container" id="video-grid">
+    <!-- Video cards will be dynamically added via JavaScript -->
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube-Style Search Bar</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        
+        .search-container {
+            display: flex;
+            width: 100%;
+            max-width: 640px;
+            position: relative;
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            height: 40px;
+            padding: 0 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 2px 0 0 2px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #1c62b9;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(28, 98, 185, 0.1);
+        }
+        
+        .search-button, .mic-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            background: #f8f8f8;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-button {
+            width: 64px;
+            border-left: none;
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .mic-button {
+            width: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+            border: none;
+            background-color: #f8f8f8;
+        }
+        
+        .search-button:hover, .mic-button:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .search-button:active, .mic-button:active {
+            background-color: #ddd;
+        }
+        
+        .search-icon, .mic-icon {
+            width: 20px;
+            height: 20px;
+            fill: #606060;
+        }
+        
+        .mic-active {
+            background-color: #ea4335;
+        }
+        
+        .mic-active .mic-icon {
+            fill: white;
+        }
+        
+        @media (max-width: 600px) {
+            .search-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search" aria-label="Search">
+        <button class="search-button" aria-label="Search">
+            <svg class="search-icon" viewBox="0 0 24 24">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+            </svg>
+        </button>
+        <button class="mic-button" aria-label="Search by voice">
+            <svg class="mic-icon" viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path>
+                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
+            const searchButton = document.querySelector('.search-button');
+            const micButton = document.querySelector('.mic-button');
+            
+            // Check if the browser supports speech recognition
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition;
+            let isListening = false;
+            
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = function() {
+                    isListening = true;
+                    micButton.classList.add('mic-active');
+                };
+                
+                recognition.onend = function() {
+                    isListening = false;
+                    micButton.classList.remove('mic-active');
+                };
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    searchInput.value = transcript;
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    micButton.classList.remove('mic-active');
+                    isListening = false;
+                    alert('Speech recognition error: ' + event.error);
+                };
+            }
+            
+            // Handle mic button click
+            micButton.addEventListener('click', function() {
+                if (!SpeechRecognition) {
+                    alert('Speech recognition is not supported in your browser. Please try Chrome, Edge, or Safari.');
+                    return;
+                }
+                
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            });
+            
+            // Handle search button click
+            searchButton.addEventListener('click', function() {
+                performSearch();
+            });
+            
+            // Handle enter key press in search input
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (query) {
+                    alert('Searching for: ' + query);
+                    // In a real application, you would redirect or perform an actual search here
+                    // window.location.href = 'search-results.html?q=' + encodeURIComponent(query);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

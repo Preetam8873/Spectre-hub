@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video - Spectre Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1 class="logo"><a href="index.html" class="animated-logo">Spectre Hub</a></h1>
+      <div class="search-container">
+        <input type="text" id="search-bar" placeholder="Search videos..." onkeyup="searchVideos()">
+      </div>
+      <button id="theme-toggle">🌙</button>
+    </div>
+  </header>
+
+  <section class="video-page container">
+    <div class="video-page-layout">
+      <div class="video-main">
+        <div class="player-wrapper">
+          <iframe id="video-player" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <h2 id="video-title"></h2>
+        <div class="video-meta">
+          <span id="video-views"></span> • <span id="video-date"></span>
+        </div>
+        <div class="video-actions">
+          <button id="like-btn">👍 <span id="like-count">0</span></button>
+          <button id="dislike-btn">👎 <span id="dislike-count">0</span></button>
+          <button id="share-btn" onclick="shareVideo()">Share</button>
+        </div>
+        <div class="video-info">
+          <p>Uploaded by <span id="video-uploader"></span></p>
+          <p id="video-description"></p>
+        </div>
+      </div>
+      <div class="related-videos">
+        <h3>Related Videos</h3>
+        <div class="related-video-grid" id="related-video-grid">
+          <!-- Related videos will be dynamically added -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+  <script>
+    loadVideoPage();
+  </script>
+</body>
+</html>
